@@ -18,10 +18,11 @@ export const Input = ({ errorMessage = null, isInvalid, ...rest }: Props) => {
         h={14}
         px={4}
         borderWidth={0}
+        borderRadius={8}
         fontSize="md"
         color="white"
         fontFamily="body"
-        placeholderTextColor="gray.300"
+        placeholderTextColor="gray.400"
         isInvalid={invalid}
         _invalid={{
           borderWidth: 1,
