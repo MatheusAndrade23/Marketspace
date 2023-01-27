@@ -5,10 +5,17 @@ import {
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
 
+import { Ads } from "@screens/Ads";
 import { Home } from "@screens/Home";
+
+import HomeSvg from "@assets/home.svg";
+import AdsSvg from "@assets/ads.svg";
+import GetOutSvg from "@assets/getout.svg";
 
 type AppRoutes = {
   home: undefined;
+  ads: undefined;
+  getout: undefined;
 };
 
 const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
@@ -23,10 +30,10 @@ export const AppRoutes = () => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: colors.green[500],
-        tabBarInactiveTintColor: colors.gray[200],
+        tabBarActiveTintColor: colors.gray[200],
+        tabBarInactiveTintColor: colors.gray[400],
         tabBarStyle: {
-          backgroundColor: colors.gray[600],
+          backgroundColor: colors.white,
           borderTopWidth: 0,
           height: Platform.OS === "android" ? "auto" : 96,
           paddingBottom: sizes[10],
@@ -34,7 +41,38 @@ export const AppRoutes = () => {
         },
       }}
     >
-      <Screen name="home" component={Home} />
+      <Screen
+        name="home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <HomeSvg fill={color} width={iconSize} height={iconSize} />
+          ),
+        }}
+      />
+      <Screen
+        name="ads"
+        component={Ads}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <AdsSvg
+              fill={color}
+              stroke={color}
+              width={iconSize}
+              height={iconSize}
+            />
+          ),
+        }}
+      />
+      <Screen
+        name="getout"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <GetOutSvg fill={color} width={iconSize} height={iconSize} />
+          ),
+        }}
+      />
     </Navigator>
   );
 };
