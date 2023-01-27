@@ -18,8 +18,8 @@ export const SignUp = () => {
   return (
     <ScrollView>
       <Center flex={1}>
-        <VStack alignItems="center" width="full" p={10}>
-          <Image source={Logo} alt="Logo" mt={5} />
+        <VStack alignItems="center" width="full" p={5}>
+          <Image source={Logo} alt="Logo" mt={8} />
           <Heading color="gray.200" fontFamily="heading">
             Boas Vindas!
           </Heading>
@@ -43,7 +43,7 @@ export const SignUp = () => {
           <Button
             title="Ir para o login"
             variant="secondary"
-            mt={5}
+            mt={2}
             onPress={handleGoBack}
           />
         </VStack>

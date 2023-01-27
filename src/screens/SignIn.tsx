@@ -18,7 +18,7 @@ export const SignIn = () => {
   return (
     <ScrollView>
       <Center flex={1}>
-        <VStack alignItems="center" width="full" p={10}>
+        <VStack alignItems="center" width="full" p={5}>
           <Image source={Logo} alt="Logo" mt={10} />
           <Heading color="gray.200" fontSize={36} fontFamily="heading" mt={5}>
             marketspace
@@ -37,7 +37,7 @@ export const SignIn = () => {
           <Button
             title="Criar uma conta"
             variant="secondary"
-            mt={5}
+            mt={2}
             onPress={handleNewAccount}
           />
         </VStack>
