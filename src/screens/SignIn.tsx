@@ -6,7 +6,7 @@ import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
-import Logo from "../assets/logo.png";
+import Logo from "@assets/logo.png";
 
 export const SignIn = () => {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
@@ -16,7 +16,7 @@ export const SignIn = () => {
   };
 
   return (
-    <ScrollView flex={1}>
+    <ScrollView>
       <Center flex={1}>
         <VStack alignItems="center" width="full" p={10}>
           <Image source={Logo} alt="Logo" mt={10} />
@@ -28,7 +28,7 @@ export const SignIn = () => {
             Acesse a sua conta
           </Text>
           <Input w="100%" placeholder="E-mail" />
-          <Input w="100%" placeholder="Senha" />
+          <Input w="100%" secureTextEntry placeholder="Senha" />
           <Button title="Entrar" mt={5} />
 
           <Text color="gray.300" mt={40}>

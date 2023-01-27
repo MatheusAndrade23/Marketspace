@@ -5,8 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
-import Logo from "../assets/logo_05x.png";
-import Profile from "../assets/profile.png";
+import Logo from "@assets/logo_05x.png";
+import Profile from "@assets/profile.png";
 
 export const SignUp = () => {
   const navigation = useNavigation();
