@@ -11,31 +11,35 @@ type Props = IStackProps & {
 export const Ad = ({ title, price, used, active, image, ...rest }: Props) => {
   return (
     <VStack position="relative" {...rest} w="45%">
-      <Heading
-        textTransform="uppercase"
-        color={active ? "white" : "gray.500"}
-        fontSize={10}
-        bg={!used ? "blue.light" : "gray.200"}
-        position="absolute"
-        zIndex={100}
-        borderRadius={10}
-        py={1}
-        px={2}
-        right={2}
-        top={2}
-      >
-        {used ? "Usado" : "Novo"}
-      </Heading>
-      <Box position="relative">
+      {active && (
+        <Heading
+          textTransform="uppercase"
+          color="white"
+          fontSize={10}
+          bg={!used ? "blue.light" : "gray.200"}
+          position="absolute"
+          zIndex={100}
+          borderRadius={10}
+          py={1}
+          px={2}
+          right={2}
+          top={2}
+        >
+          {used ? "Usado" : "Novo"}
+        </Heading>
+      )}
+
+      <Box position="relative" alignItems="center" justifyContent="center">
         {!active && (
           <Heading
             textTransform="uppercase"
-            color="gray.200"
+            color="white"
             fontSize={10}
             position="absolute"
-            left={2}
-            bottom="2"
             zIndex={100}
+            bg="gray.200"
+            p={1}
+            borderRadius={10}
           >
             Anúncio Desativado
           </Heading>
@@ -50,6 +54,8 @@ export const Ad = ({ title, price, used, active, image, ...rest }: Props) => {
           resizeMode="cover"
           borderRadius={10}
           blurRadius={active ? 0 : 10}
+          borderWidth={1}
+          borderColor="gray.500"
         />
       </Box>
 
