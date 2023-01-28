@@ -15,7 +15,7 @@ import { Plus } from "phosphor-react-native";
 export const Ads = () => {
   return (
     <ScrollView>
-      <VStack flex={1} p={5}>
+      <VStack flex={1} p={5} mt={5}>
         <HStack
           alignItems="center"
           mt={5}
@@ -32,7 +32,7 @@ export const Ads = () => {
           </Button>
         </HStack>
 
-        <HStack w="full" justifyContent="space-between" mt={10}>
+        <HStack w="full" justifyContent="space-between" my={10}>
           <Text color="gray.300" fontSize={16}>
             9 anúncios
           </Text>
@@ -43,6 +43,13 @@ export const Ads = () => {
           title="Luminária pendente"
           image="https://m.media-amazon.com/images/I/510SeRtQxzL._AC_SX679_.jpg"
           active={true}
+          used={false}
+          price="45,00"
+        />
+        <Ad
+          title="Luminária pendente"
+          image="https://m.media-amazon.com/images/I/510SeRtQxzL._AC_SX679_.jpg"
+          active={false}
           used={false}
           price="45,00"
         />
