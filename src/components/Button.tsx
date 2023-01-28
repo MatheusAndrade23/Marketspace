@@ -1,11 +1,23 @@
-import { Button as ButtonNativeBase, IButtonProps, Text } from "native-base";
+import { ReactNode } from "react";
+import {
+  Button as ButtonNativeBase,
+  IButtonProps,
+  Text,
+  HStack,
+} from "native-base";
 
 type Props = IButtonProps & {
   title: string;
+  icon?: ReactNode;
   variant?: "default" | "secondary";
 };
 
-export const Button = ({ title, variant = "default", ...rest }: Props) => {
+export const Button = ({
+  title,
+  variant = "default",
+  icon,
+  ...rest
+}: Props) => {
   return (
     <ButtonNativeBase
       w="full"
@@ -17,13 +29,17 @@ export const Button = ({ title, variant = "default", ...rest }: Props) => {
       }}
       {...rest}
     >
-      <Text
-        color={variant === "secondary" ? "gray.600" : "white"}
-        fontFamily="heading"
-        fontSize="sm"
-      >
-        {title}
-      </Text>
+      <HStack alignItems="center">
+        {icon}
+        <Text
+          ml={icon ? 2 : 0}
+          color={variant === "secondary" ? "gray.600" : "white"}
+          fontFamily="heading"
+          fontSize="sm"
+        >
+          {title}
+        </Text>
+      </HStack>
     </ButtonNativeBase>
   );
 };
