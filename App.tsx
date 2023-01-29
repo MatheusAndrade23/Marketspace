@@ -1,5 +1,3 @@
-import { StatusBar, View } from "react-native";
-
 import { NativeBaseProvider } from "native-base";
 
 import {
@@ -16,13 +14,9 @@ import { Routes } from "@routes/index";
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
+
   return (
     <NativeBaseProvider theme={THEME}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent
-      />
       {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
