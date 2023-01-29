@@ -27,7 +27,10 @@ export const Ad = () => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         <VStack flex={1}>
           <HStack w="full" justifyContent="space-between" mt={10}>
             <NativeButton variant="secondary" px={5}>

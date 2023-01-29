@@ -14,7 +14,10 @@ import { Plus } from "phosphor-react-native";
 
 export const Ads = () => {
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
       <VStack flex={1} p={5} mt={5}>
         <HStack
           alignItems="center"

@@ -16,7 +16,10 @@ export const SignIn = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
       <Center flex={1}>
         <VStack alignItems="center" width="full" p={5}>
           <Image source={Logo} alt="Logo" mt={10} />
