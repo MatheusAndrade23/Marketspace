@@ -15,12 +15,12 @@ export const Input = ({ errorMessage = null, isInvalid, ...rest }: Props) => {
     <FormControl isInvalid={invalid} mb={4}>
       <NativeBaseInput
         bg="gray.700"
-        h={14}
+        minH={14}
         px={4}
         borderWidth={0}
         borderRadius={8}
         fontSize="md"
-        color="white"
+        color="gray.200"
         fontFamily="body"
         placeholderTextColor="gray.400"
         isInvalid={invalid}
