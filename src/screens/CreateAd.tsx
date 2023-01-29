@@ -12,25 +12,31 @@ import {
   useTheme,
   Radio,
   Checkbox,
+  Switch,
 } from "native-base";
 
 import { Input } from "@components/Input";
-import { AdHeader } from "@components/AdHeader";
 import { Button } from "@components/Button";
+import { AdHeader } from "@components/AdHeader";
 
 import { Plus } from "phosphor-react-native";
 
 export const CreateAd = () => {
-  const [productCondition, setProductCondition] = useState("new");
-  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [productCondition, setProductCondition] = useState<string>("new");
+  const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
+  const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
 
   const { colors } = useTheme();
+
   return (
     <>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         <AdHeader title="Criar Anúncio" mt={12} />
 
-        <VStack p={5}>
+        <VStack p={5} flex={1} alignItems="flex-start">
           <Heading color="gray.200" fontSize={18}>
             Imagens
           </Heading>
@@ -103,6 +109,22 @@ export const CreateAd = () => {
           </Heading>
 
           <Input placeholder="0,00" h="14" mb={0} />
+
+          <Heading color="gray.200" fontSize={16} my={2}>
+            Aceita troca?
+          </Heading>
+
+          <Switch
+            onToggle={(value) => setAcceptSwap(value)}
+            value={acceptSwap}
+            size="lg"
+            colorScheme="blue.light"
+            m={0}
+          />
+
+          <Heading color="gray.200" fontSize={16} my={2}>
+            Meios de pagamento
+          </Heading>
 
           <Checkbox.Group onChange={setPaymentMethods} value={paymentMethods}>
             <Checkbox value="boleto">
