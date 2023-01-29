@@ -8,7 +8,14 @@ type Props = IStackProps & {
   image: string;
 };
 
-export const Ad = ({ title, price, used, active, image, ...rest }: Props) => {
+export const AdCard = ({
+  title,
+  price,
+  used,
+  active,
+  image,
+  ...rest
+}: Props) => {
   return (
     <VStack position="relative" {...rest} w="45%">
       {active && (
