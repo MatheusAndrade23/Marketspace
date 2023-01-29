@@ -8,7 +8,7 @@ import {
   Center,
 } from "native-base";
 
-import { Ad } from "@components/Ad";
+import { AdCard } from "@components/AdCard";
 
 import { Plus } from "phosphor-react-native";
 
@@ -39,18 +39,18 @@ export const Ads = () => {
           <Text>Todos</Text>
         </HStack>
 
-        <Ad
+        <AdCard
           title="Luminária pendente"
           image="https://m.media-amazon.com/images/I/510SeRtQxzL._AC_SX679_.jpg"
           active={true}
           used={false}
           price="45,00"
         />
-        <Ad
+        <AdCard
           title="Luminária pendente"
           image="https://m.media-amazon.com/images/I/510SeRtQxzL._AC_SX679_.jpg"
           active={false}
-          used={false}
+          used={true}
           price="45,00"
         />
       </VStack>

@@ -28,12 +28,12 @@ export const MyAd = () => {
   return (
     <ScrollView>
       <VStack flex={1}>
-        <HStack w="full" justifyContent="space-between" mt={10} px={5}>
-          <NativeButton variant="secondary">
+        <HStack w="full" justifyContent="space-between" mt={10}>
+          <NativeButton variant="secondary" px={5}>
             <ArrowLeft color={colors.gray[200]} />
           </NativeButton>
 
-          <NativeButton variant="secondary">
+          <NativeButton variant="secondary" px={5}>
             <Pencil color={colors.gray[200]} />
           </NativeButton>
         </HStack>
@@ -100,7 +100,7 @@ export const MyAd = () => {
             </Text>
           </HStack>
 
-          <HStack>
+          <HStack alignItems="center">
             <Bank size={20} color={colors.gray[300]} />
             <Text ml={2} color="gray.300">
               Depósito Bancário
