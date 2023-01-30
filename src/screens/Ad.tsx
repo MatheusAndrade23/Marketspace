@@ -10,6 +10,9 @@ import {
   useTheme,
 } from "native-base";
 
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+
 import { Button } from "@components/Button";
 
 import {
@@ -25,6 +28,12 @@ import {
 export const Ad = () => {
   const { colors } = useTheme();
 
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  const handleGoBack = () => {
+    navigation.navigate("app", { screen: "home" });
+  };
+
   return (
     <>
       <ScrollView
@@ -33,7 +42,7 @@ export const Ad = () => {
       >
         <VStack flex={1}>
           <HStack w="full" justifyContent="space-between" mt={10}>
-            <NativeButton variant="secondary" px={5}>
+            <NativeButton variant="secondary" px={5} onPress={handleGoBack}>
               <ArrowLeft color={colors.gray[200]} />
             </NativeButton>
           </HStack>

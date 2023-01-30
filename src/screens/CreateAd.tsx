@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   ScrollView,
@@ -15,6 +14,9 @@ import {
   Switch,
 } from "native-base";
 
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { AdHeader } from "@components/AdHeader";
@@ -28,13 +30,19 @@ export const CreateAd = () => {
 
   const { colors } = useTheme();
 
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  const handleGoBack = () => {
+    navigation.navigate("app", { screen: "ads" });
+  };
+
   return (
     <>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
-        <AdHeader title="Criar Anúncio" mt={12} />
+        <AdHeader title="Criar Anúncio" mt={12} goBack={handleGoBack} />
 
         <VStack p={5} flex={1} alignItems="flex-start">
           <Heading color="gray.200" fontSize={18}>
@@ -170,6 +178,7 @@ export const CreateAd = () => {
           justifyContent="center"
           w="47%"
           h={12}
+          onPress={handleGoBack}
         />
         <Button
           title="Avançar"

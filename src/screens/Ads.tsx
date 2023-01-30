@@ -8,11 +8,20 @@ import {
   Center,
 } from "native-base";
 
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+
 import { AdCard } from "@components/AdCard";
 
 import { Plus } from "phosphor-react-native";
 
 export const Ads = () => {
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  const handleGoCreateAd = () => {
+    navigation.navigate("createad");
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -30,7 +39,12 @@ export const Ads = () => {
             Meus Anúncios
           </Heading>
 
-          <Button variant="secondary" position="absolute" right={-14}>
+          <Button
+            variant="secondary"
+            position="absolute"
+            right={-14}
+            onPress={handleGoCreateAd}
+          >
             <Plus />
           </Button>
         </HStack>

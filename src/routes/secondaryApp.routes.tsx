@@ -1,6 +1,9 @@
 import { Platform } from "react-native";
 import { useTheme } from "native-base";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  BottomTabNavigationProp,
+} from "@react-navigation/bottom-tabs";
 
 import { Ads } from "@screens/Ads";
 import { Home } from "@screens/Home";
@@ -13,10 +16,12 @@ type SecondaryAppRoutes = {
   home: undefined;
   ads: undefined;
   getout: undefined;
-  secondary: undefined;
 };
 
 const { Navigator, Screen } = createBottomTabNavigator<SecondaryAppRoutes>();
+
+export type SecondaryAppNavigatorRoutesProps =
+  BottomTabNavigationProp<SecondaryAppRoutes>;
 
 export const SecondaryAppRoutes = () => {
   const { sizes, colors } = useTheme();

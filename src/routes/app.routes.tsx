@@ -1,4 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from "@react-navigation/native-stack";
 
 import { SecondaryAppRoutes } from "./secondaryApp.routes";
 
@@ -8,10 +11,14 @@ import { CreateAd } from "@screens/CreateAd";
 
 const { Navigator, Screen } = createNativeStackNavigator<AppRoutes>();
 
+export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>;
+
 type AppRoutes = {
   myad: undefined;
   ad: undefined;
-  app: undefined;
+  app: {
+    screen: "ads" | "home" | "getout";
+  };
   createad: undefined;
 };
 
