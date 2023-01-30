@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StatusBar } from "react-native";
 
 import {
   ScrollView,
@@ -36,8 +37,13 @@ export const CreateAd = () => {
     navigation.navigate("app", { screen: "myads" });
   };
 
+  const handleGoPreview = () => {
+    navigation.navigate("adpreview");
+  };
+
   return (
     <>
+      <StatusBar backgroundColor={colors.gray[600]} />
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
@@ -185,6 +191,7 @@ export const CreateAd = () => {
           justifyContent="center"
           w="47%"
           h={12}
+          onPress={handleGoPreview}
         />
       </HStack>
     </>

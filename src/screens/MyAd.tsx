@@ -6,7 +6,6 @@ import {
   Button as NativeButton,
   Image,
   Heading,
-  Center,
   useTheme,
 } from "native-base";
 
