@@ -17,7 +17,7 @@ import { AdCard } from "@components/AdCard";
 
 import { Plus } from "phosphor-react-native";
 
-export const Ads = () => {
+export const MyAds = () => {
   const [adType, setAdType] = useState("all");
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 

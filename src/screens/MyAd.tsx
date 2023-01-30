@@ -31,7 +31,7 @@ export const MyAd = () => {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoBack = () => {
-    navigation.navigate("app", { screen: "ads" });
+    navigation.navigate("app", { screen: "myads" });
   };
 
   return (

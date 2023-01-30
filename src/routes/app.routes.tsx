@@ -17,7 +17,7 @@ type AppRoutes = {
   myad: undefined;
   ad: undefined;
   app: {
-    screen: "ads" | "home" | "getout";
+    screen: "myads" | "home" | "getout";
   };
   createad: undefined;
 };

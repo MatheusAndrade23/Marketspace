@@ -33,7 +33,7 @@ export const CreateAd = () => {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoBack = () => {
-    navigation.navigate("app", { screen: "ads" });
+    navigation.navigate("app", { screen: "myads" });
   };
 
   return (
@@ -126,7 +126,6 @@ export const CreateAd = () => {
             onToggle={(value) => setAcceptSwap(value)}
             value={acceptSwap}
             size="lg"
-            colorScheme="blue.light"
             m={0}
           />
 

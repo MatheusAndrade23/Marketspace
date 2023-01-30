@@ -5,8 +5,8 @@ import {
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
 
-import { Ads } from "@screens/Ads";
 import { Home } from "@screens/Home";
+import { MyAds } from "@screens/MyAds";
 
 import HomeSvg from "@assets/home.svg";
 import AdsSvg from "@assets/ads.svg";
@@ -14,7 +14,7 @@ import GetOutSvg from "@assets/getout.svg";
 
 type SecondaryAppRoutes = {
   home: undefined;
-  ads: undefined;
+  myads: undefined;
   getout: undefined;
 };
 
@@ -54,8 +54,8 @@ export const SecondaryAppRoutes = () => {
         }}
       />
       <Screen
-        name="ads"
-        component={Ads}
+        name="myads"
+        component={MyAds}
         options={{
           tabBarIcon: ({ color }) => (
             <AdsSvg
