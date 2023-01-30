@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ScrollView,
   Text,
@@ -6,6 +7,7 @@ import {
   Heading,
   Button,
   Center,
+  Select,
 } from "native-base";
 
 import { useNavigation } from "@react-navigation/native";
@@ -16,6 +18,7 @@ import { AdCard } from "@components/AdCard";
 import { Plus } from "phosphor-react-native";
 
 export const Ads = () => {
+  const [adType, setAdType] = useState("all");
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoCreateAd = () => {
@@ -27,13 +30,14 @@ export const Ads = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} p={5} mt={5}>
+      <VStack flex={1} mt={5} py={5}>
         <HStack
           alignItems="center"
           mt={5}
           width="full"
           position="relative"
           justifyContent="center"
+          px={5}
         >
           <Heading color="gray.200" fontSize={22} fontFamily="heading">
             Meus Anúncios
@@ -42,18 +46,40 @@ export const Ads = () => {
           <Button
             variant="secondary"
             position="absolute"
-            right={-14}
+            right={0}
+            pr={5}
             onPress={handleGoCreateAd}
           >
             <Plus />
           </Button>
         </HStack>
 
-        <HStack w="full" justifyContent="space-between" my={10}>
+        <HStack
+          w="full"
+          justifyContent="space-between"
+          my={7}
+          alignItems="center"
+          px={5}
+        >
           <Text color="gray.300" fontSize={16}>
             9 anúncios
           </Text>
-          <Text>Todos</Text>
+          <Select
+            selectedValue={adType}
+            placeholder="Escolha um tipo"
+            minWidth="110"
+            color="gray.300"
+            onValueChange={(itemValue) => setAdType(itemValue)}
+            _selectedItem={{
+              borderColor: "blue.light",
+              borderWidth: 1,
+              borderRadius: 8,
+            }}
+          >
+            <Select.Item label="Todos" value="all" />
+            <Select.Item label="Ativos" value="active" />
+            <Select.Item label="Inativos" value="inactive" />
+          </Select>
         </HStack>
 
         <AdCard
