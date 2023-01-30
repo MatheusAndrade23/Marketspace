@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   HStack,
   ScrollView,
@@ -6,7 +7,11 @@ import {
   Heading,
   Text,
   Input,
+  Modal,
   Button as NativeButton,
+  Checkbox,
+  Switch,
+  Radio,
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 
@@ -24,6 +29,11 @@ import {
 } from "phosphor-react-native";
 
 export const Home = () => {
+  const [showFiltersModal, setShowFiltersModal] = useState<boolean>(false);
+  const [productCondition, setProductCondition] = useState<string>("new");
+  const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
+  const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleCreateAd = () => {
@@ -147,6 +157,7 @@ export const Home = () => {
             <MagnifyingGlass weight="bold" color="#5F5B62" />
           </NativeButton>
           <NativeButton
+            onPress={() => setShowFiltersModal(true)}
             bg="white"
             _pressed={{
               bg: "gray.500",
@@ -156,6 +167,117 @@ export const Home = () => {
           </NativeButton>
         </HStack>
       </VStack>
+      <Modal
+        isOpen={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+        size="xl"
+      >
+        <Modal.Content marginBottom="5" marginTop="auto">
+          <Modal.CloseButton />
+          <Modal.Header>
+            <Heading color="gray.200" fontSize={20}>
+              Filtar Anúncios
+            </Heading>
+          </Modal.Header>
+
+          <Modal.Body alignItems="flex-start" mb="5">
+            <Heading color="gray.200" fontSize={16} my={2}>
+              Condição
+            </Heading>
+
+            <Radio.Group
+              name="productCondition"
+              value={productCondition}
+              onChange={(nextValue) => {
+                setProductCondition(nextValue);
+              }}
+            >
+              <HStack>
+                <Radio value="new" my="2" size="sm">
+                  <Text color="gray.200" fontSize={14}>
+                    Novo
+                  </Text>
+                </Radio>
+                <Radio value="used" my="2" ml={5} size="sm">
+                  <Text color="gray.200" fontSize={14}>
+                    Usado
+                  </Text>
+                </Radio>
+              </HStack>
+            </Radio.Group>
+
+            <Heading color="gray.200" fontSize={16} my={2}>
+              Aceita troca?
+            </Heading>
+
+            <Switch
+              onToggle={(value) => setAcceptSwap(value)}
+              value={acceptSwap}
+              size="lg"
+              m={0}
+            />
+
+            <Heading color="gray.200" fontSize={16} my={2}>
+              Meios de pagamento
+            </Heading>
+
+            <Checkbox.Group onChange={setPaymentMethods} value={paymentMethods}>
+              <Checkbox value="boleto">
+                <Text color="gray.300" fontSize={16}>
+                  Boleto
+                </Text>
+              </Checkbox>
+              <Checkbox value="pix">
+                <Text color="gray.300" fontSize={16}>
+                  Pix
+                </Text>
+              </Checkbox>
+              <Checkbox value="dinheiro">
+                <Text color="gray.300" fontSize={16}>
+                  Dinheiro
+                </Text>
+              </Checkbox>
+              <Checkbox value="credito">
+                <Text color="gray.300" fontSize={16}>
+                  Cartão de Crédito
+                </Text>
+              </Checkbox>
+              <Checkbox value="deposito">
+                <Text color="gray.300" fontSize={16}>
+                  Depósito Bancário
+                </Text>
+              </Checkbox>
+            </Checkbox.Group>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <HStack
+              w="full"
+              py={2}
+              px={5}
+              bg="white"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Button
+                variant="secondary"
+                title="Resetar Filtros"
+                alignItems="center"
+                justifyContent="center"
+                w="47%"
+                h={12}
+              />
+              <Button
+                title="Aplicar Filtros"
+                alignItems="center"
+                justifyContent="center"
+                w="47%"
+                h={12}
+              />
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </ScrollView>
   );
 };
