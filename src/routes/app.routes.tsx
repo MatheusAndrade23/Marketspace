@@ -9,19 +9,21 @@ import { Ad } from "@screens/Ad";
 import { MyAd } from "@screens/MyAd";
 import { EditAd } from "@screens/EditAd";
 import { CreateAd } from "@screens/CreateAd";
+import { AdPreview } from "@screens/AdPreview";
 
 const { Navigator, Screen } = createNativeStackNavigator<AppRoutes>();
 
 export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>;
 
 type AppRoutes = {
+  ad: undefined;
   myad: undefined;
   editad: undefined;
-  ad: undefined;
+  createad: undefined;
+  adpreview: undefined;
   app: {
     screen: "myads" | "home" | "getout";
   };
-  createad: undefined;
 };
 
 export const AppRoutes = () => {
@@ -31,6 +33,7 @@ export const AppRoutes = () => {
       <Screen name="myad" component={MyAd} />
       <Screen name="editad" component={EditAd} />
       <Screen name="createad" component={CreateAd} />
+      <Screen name="adpreview" component={AdPreview} />
       <Screen name="app" component={SecondaryAppRoutes} />
     </Navigator>
   );
