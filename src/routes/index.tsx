@@ -23,7 +23,7 @@ export const Routes = () => {
 
       <Box flex={1} bg="gray.6">
         <NavigationContainer theme={theme}>
-          {true ? <AppRoutes /> : <AuthRoutes />}
+          {false ? <AppRoutes /> : <AuthRoutes />}
         </NavigationContainer>
       </Box>
     </>
