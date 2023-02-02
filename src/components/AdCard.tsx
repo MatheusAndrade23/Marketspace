@@ -10,6 +10,8 @@ type Props = IStackProps & {
   used: boolean;
   active: boolean;
   image: string;
+  showProfile?: boolean;
+  profileImage?: string;
 };
 
 export const AdCard = ({
@@ -18,6 +20,8 @@ export const AdCard = ({
   used,
   active,
   image,
+  profileImage,
+  showProfile = false,
   ...rest
 }: Props) => {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
@@ -40,8 +44,8 @@ export const AdCard = ({
             borderRadius={10}
             py={1}
             px={2}
-            right={2}
-            top={2}
+            right={1}
+            top={1}
           >
             {used ? "Usado" : "Novo"}
           </Heading>
@@ -61,6 +65,24 @@ export const AdCard = ({
             >
               Anúncio Desativado
             </Heading>
+          )}
+
+          {showProfile && (
+            <Image
+              h={8}
+              w={8}
+              source={{
+                uri: profileImage,
+              }}
+              alt={title}
+              borderRadius="full"
+              position="absolute"
+              zIndex={100}
+              left={1}
+              top={1}
+              borderWidth={1}
+              borderColor="gray.400"
+            />
           )}
           <Image
             h={20}
