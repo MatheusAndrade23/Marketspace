@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   ScrollView,
   VStack,
@@ -36,6 +38,8 @@ const signUpSchema = yup.object({
 });
 
 export const SignIn = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -123,7 +127,12 @@ export const SignIn = () => {
             )}
           />
 
-          <Button title="Entrar" mt={5} onPress={handleSubmit(handleSignIn)} />
+          <Button
+            title="Entrar"
+            mt={5}
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
 
           <Text color="gray.300" mt={40}>
             Ainda não tem acesso?
