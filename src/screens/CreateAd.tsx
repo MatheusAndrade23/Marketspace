@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, LogBox } from "react-native";
 
 import {
   ScrollView,
@@ -15,6 +15,11 @@ import {
   Switch,
 } from "native-base";
 
+import { Controller, useForm } from "react-hook-form";
+
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
@@ -24,10 +29,41 @@ import { AdHeader } from "@components/AdHeader";
 
 import { Plus } from "phosphor-react-native";
 
+const createAdSchema = yup.object({
+  title: yup
+    .string()
+    .required("Informe um título.")
+    .min(6, "O título deve ter no mínimo 6 letras."),
+  description: yup
+    .string()
+    .required("Informe uma descrição.")
+    .min(20, "A descrição deve ser detalhada!"),
+  price: yup.string().required("Informe um preço."),
+});
+
+type FormDataProps = {
+  title: string;
+  description: string;
+  price: string;
+};
+
 export const CreateAd = () => {
   const [productCondition, setProductCondition] = useState<string>("new");
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
   const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    defaultValues: {
+      title: "",
+      description: "",
+      price: "",
+    },
+    resolver: yupResolver(createAdSchema),
+  });
 
   const { colors } = useTheme();
 
@@ -90,13 +126,37 @@ export const CreateAd = () => {
             Sobre o produto
           </Heading>
 
-          <Input placeholder="Título" />
-          <Input
-            placeholder="Descrição"
-            multiline={true}
-            numberOfLines={5}
-            textAlignVertical="top"
+          <Controller
+            control={control}
+            name="title"
+            rules={{ required: "Informe o título" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Título"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.title?.message}
+              />
+            )}
           />
+
+          <Controller
+            control={control}
+            name="description"
+            rules={{ required: "Informe a descrição" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Descrição"
+                multiline={true}
+                numberOfLines={5}
+                textAlignVertical="top"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.description?.message}
+              />
+            )}
+          />
+
           <Radio.Group
             name="productCondition"
             value={productCondition}
@@ -122,7 +182,21 @@ export const CreateAd = () => {
             Venda
           </Heading>
 
-          <Input placeholder="0,00" h="14" mb={0} />
+          <Controller
+            control={control}
+            name="price"
+            rules={{ required: "Informe o e-mail" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="0,00"
+                h="14"
+                mb={0}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.price?.message}
+              />
+            )}
+          />
 
           <Heading color="gray.200" fontSize={16} my={2}>
             Aceita troca?
@@ -139,7 +213,11 @@ export const CreateAd = () => {
             Meios de pagamento
           </Heading>
 
-          <Checkbox.Group onChange={setPaymentMethods} value={paymentMethods}>
+          <Checkbox.Group
+            onChange={(value) => setPaymentMethods(value)}
+            value={paymentMethods}
+            accessibilityLabel="Escolha o método de pagamento."
+          >
             <Checkbox value="boleto">
               <Text color="gray.300" fontSize={16}>
                 Boleto
@@ -191,9 +269,14 @@ export const CreateAd = () => {
           justifyContent="center"
           w="47%"
           h={12}
-          onPress={handleGoPreview}
+          onPress={handleSubmit(handleGoPreview)}
         />
       </HStack>
     </>
   );
 };
+
+// Procurando solução
+LogBox.ignoreLogs([
+  "We can not support a function callback. See Github Issues for details https://github.com/adobe/react-spectrum/issues/2320",
+]);

@@ -29,7 +29,7 @@ type FormDataProps = {
   password: string;
 };
 
-const signUpSchema = yup.object({
+const signInSchema = yup.object({
   email: yup.string().required("Informe o e-mail.").email("E-mail inválido."),
   password: yup
     .string()
@@ -49,7 +49,7 @@ export const SignIn = () => {
       email: "",
       password: "",
     },
-    resolver: yupResolver(signUpSchema),
+    resolver: yupResolver(signInSchema),
   });
 
   const toast = useToast();

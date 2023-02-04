@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LogBox } from "react-native";
 
 import {
   ScrollView,
@@ -14,6 +15,11 @@ import {
   Switch,
 } from "native-base";
 
+import { Controller, useForm } from "react-hook-form";
+
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
@@ -23,10 +29,41 @@ import { AdHeader } from "@components/AdHeader";
 
 import { Plus } from "phosphor-react-native";
 
+const editAdSchema = yup.object({
+  title: yup
+    .string()
+    .required("Informe um título.")
+    .min(6, "O título deve ter no mínimo 6 letras."),
+  description: yup
+    .string()
+    .required("Informe uma descrição.")
+    .min(20, "A descrição deve ser detalhada!"),
+  price: yup.string().required("Informe um preço."),
+});
+
+type FormDataProps = {
+  title: string;
+  description: string;
+  price: string;
+};
+
 export const EditAd = () => {
   const [productCondition, setProductCondition] = useState<string>("new");
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
   const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    defaultValues: {
+      title: "",
+      description: "",
+      price: "",
+    },
+    resolver: yupResolver(editAdSchema),
+  });
 
   const { colors } = useTheme();
 
@@ -34,6 +71,10 @@ export const EditAd = () => {
 
   const handleGoBack = () => {
     navigation.navigate("myad");
+  };
+
+  const handleGoPreview = () => {
+    navigation.navigate("adpreview");
   };
 
   return (
@@ -84,13 +125,37 @@ export const EditAd = () => {
             Sobre o produto
           </Heading>
 
-          <Input placeholder="Título" />
-          <Input
-            placeholder="Descrição"
-            multiline={true}
-            numberOfLines={5}
-            textAlignVertical="top"
+          <Controller
+            control={control}
+            name="title"
+            rules={{ required: "Informe o título" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Título"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.title?.message}
+              />
+            )}
           />
+
+          <Controller
+            control={control}
+            name="description"
+            rules={{ required: "Informe a descrição" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Descrição"
+                multiline={true}
+                numberOfLines={5}
+                textAlignVertical="top"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.description?.message}
+              />
+            )}
+          />
+
           <Radio.Group
             name="productCondition"
             value={productCondition}
@@ -185,8 +250,14 @@ export const EditAd = () => {
           justifyContent="center"
           w="47%"
           h={12}
+          onPress={handleSubmit(handleGoPreview)}
         />
       </HStack>
     </>
   );
 };
+
+// Procurando solução
+LogBox.ignoreLogs([
+  "We can not support a function callback. See Github Issues for details https://github.com/adobe/react-spectrum/issues/2320",
+]);
