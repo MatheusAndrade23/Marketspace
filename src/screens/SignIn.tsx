@@ -23,6 +23,7 @@ import { Button } from "@components/Button";
 
 import Logo from "@assets/logo.png";
 import { AppError } from "@utils/AppError";
+import { api } from "@services/api";
 
 type FormDataProps = {
   email: string;
