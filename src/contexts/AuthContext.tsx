@@ -18,6 +18,7 @@ import { api } from "@services/api";
 
 export type AuthContextDataProps = {
   user: UserDTO;
+  singIn: (email: string, password: string) => void;
 };
 
 type AuthContextProviderProps = {
@@ -34,6 +35,19 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
     useState(true);
+
+  const storageUserAndTokenSave = async (userData: UserDTO, token: string) => {
+    try {
+      setIsLoadingUserStorageData(true);
+
+      await storageUserSave(userData);
+      await storageAuthTokenSave(token);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
+    }
+  };
 
   const userAndTokenUpdate = (userData: UserDTO, token: string) => {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -71,11 +85,28 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   };
 
+  const singIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post("/sessions", { email, password });
+
+      if (data.user && data.token) {
+        await storageUserAndTokenSave(data.user, data.token);
+        userAndTokenUpdate(data.user, data.token);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
+    }
+  };
+
   useEffect(() => {
     loadUserData();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, singIn }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

@@ -23,7 +23,8 @@ import { Button } from "@components/Button";
 
 import Logo from "@assets/logo.png";
 import { AppError } from "@utils/AppError";
-import { api } from "@services/api";
+
+import { useAuth } from "@hooks/useAuth";
 
 type FormDataProps = {
   email: string;
@@ -53,6 +54,8 @@ export const SignIn = () => {
     resolver: yupResolver(signInSchema),
   });
 
+  const { singIn } = useAuth();
+
   const toast = useToast();
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
@@ -63,6 +66,8 @@ export const SignIn = () => {
 
   const handleSignIn = async ({ email, password }: FormDataProps) => {
     try {
+      setIsLoading(true);
+      await singIn(email, password);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError
@@ -76,6 +81,7 @@ export const SignIn = () => {
           bgColor: "red.500",
         });
       }
+      setIsLoading(false);
     }
   };
 

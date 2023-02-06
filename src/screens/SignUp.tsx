@@ -31,6 +31,8 @@ import Profile from "@assets/profile.png";
 import { AppError } from "@utils/AppError";
 import { api } from "@services/api";
 
+import { useAuth } from "@hooks/useAuth";
+
 type FormDataProps = {
   name: string;
   email: string;
@@ -64,6 +66,8 @@ export const SignUp = () => {
   const navigation = useNavigation();
 
   const toast = useToast();
+
+  const { singIn } = useAuth();
 
   const {
     control,
@@ -168,7 +172,7 @@ export const SignUp = () => {
 
       setIsLoading(true);
 
-      const resp = await api.post(
+      await api.post(
         "/users",
         {
           name,
@@ -183,7 +187,7 @@ export const SignUp = () => {
         }
       );
 
-      console.log(resp);
+      await singIn(email, password);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError
