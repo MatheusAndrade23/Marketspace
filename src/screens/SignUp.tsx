@@ -29,6 +29,7 @@ import Logo from "@assets/logo_05x.png";
 import Profile from "@assets/profile.png";
 
 import { AppError } from "@utils/AppError";
+import { api } from "@services/api";
 
 type FormDataProps = {
   name: string;
@@ -41,7 +42,7 @@ type FormDataProps = {
 const signUpSchema = yup.object({
   name: yup.string().required("Informe o nome."),
   phoneNumber: yup.string().required("Informe seu número."),
-  email: yup.string().required("Informe o e-mail").email("E-mail inválido."),
+  email: yup.string().required("Informe o e-mail.").email("E-mail inválido."),
   password: yup
     .string()
     .required("Informe a senha")
@@ -57,6 +58,7 @@ export const SignUp = () => {
   const [userImageSelected, setUserImageSelected] = useState({
     selected: false,
     uri: "",
+    name: "",
   });
 
   const navigation = useNavigation();
@@ -79,8 +81,6 @@ export const SignUp = () => {
     resolver: yupResolver(signUpSchema),
   });
 
-  const { name } = getValues();
-
   const handleUserPhotoSelect = async () => {
     try {
       const photoSelected = await ImagePicker.launchImageLibraryAsync({
@@ -88,6 +88,7 @@ export const SignUp = () => {
         quality: 1,
         aspect: [4, 4],
         allowsEditing: true,
+        base64: true,
       });
 
       if (photoSelected.canceled) {
@@ -110,7 +111,7 @@ export const SignUp = () => {
         const fileExtension = photoSelected.assets[0].uri.split(".").pop();
 
         const photoFile = {
-          name: `${name}.${fileExtension}`.toLowerCase(),
+          name: `${fileExtension}`.toLowerCase(),
           uri: photoSelected.assets[0].uri,
           type: `${photoSelected.assets[0].type}/${fileExtension}`,
         } as any;
@@ -131,8 +132,6 @@ export const SignUp = () => {
         });
       }
     } catch (error) {
-      console.log(error);
-
       toast.show({
         title: "Erro! Tente novamente mais tarde!",
         placement: "top",
@@ -147,8 +146,44 @@ export const SignUp = () => {
     navigation.goBack();
   };
 
-  const handleSignUp = async ({ name, email, password }: FormDataProps) => {
+  const handleSignUp = async ({
+    name,
+    email,
+    password,
+    phoneNumber,
+  }: FormDataProps) => {
     try {
+      if (!userImageSelected.selected) {
+        return toast.show({
+          title: "Por favor selecione uma imagem!",
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+
+      const userImage = {
+        ...userImageSelected,
+        name: `${name} + ${userImageSelected.name}`.toLowerCase(),
+      };
+
+      setIsLoading(true);
+
+      const resp = await api.post(
+        "/users",
+        {
+          name,
+          email,
+          password,
+          tel: phoneNumber,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(resp);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError
@@ -162,6 +197,8 @@ export const SignUp = () => {
           bgColor: "red.500",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
