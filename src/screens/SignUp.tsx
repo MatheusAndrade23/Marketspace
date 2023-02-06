@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { TouchableOpacity } from "react-native";
+
 import {
   ScrollView,
   VStack,
@@ -14,6 +16,9 @@ import { useForm, Controller } from "react-hook-form";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -49,6 +54,10 @@ const signUpSchema = yup.object({
 
 export const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [userImageSelected, setUserImageSelected] = useState({
+    selected: false,
+    uri: "",
+  });
 
   const navigation = useNavigation();
 
@@ -57,6 +66,7 @@ export const SignUp = () => {
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<FormDataProps>({
     defaultValues: {
@@ -68,6 +78,70 @@ export const SignUp = () => {
     },
     resolver: yupResolver(signUpSchema),
   });
+
+  const { name } = getValues();
+
+  const handleUserPhotoSelect = async () => {
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
+
+      if (photoSelected.canceled) {
+        return;
+      }
+
+      if (photoSelected.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          photoSelected.assets[0].uri
+        );
+
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            title: "Essa imagem é muito grande. Escolha uma de até 5MB.",
+            placement: "top",
+            bgColor: "red.500",
+          });
+        }
+
+        const fileExtension = photoSelected.assets[0].uri.split(".").pop();
+
+        const photoFile = {
+          name: `${name}.${fileExtension}`.toLowerCase(),
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any;
+
+        setUserImageSelected({
+          selected: true,
+          ...photoFile,
+        });
+
+        // const userPhotoUploadForm = new FormData();
+
+        // userPhotoUploadForm.append("avatar", photoFile);
+
+        toast.show({
+          title: "Foto selecionada!",
+          placement: "top",
+          bgColor: "green.500",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      toast.show({
+        title: "Erro! Tente novamente mais tarde!",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -102,18 +176,35 @@ export const SignUp = () => {
           <Heading color="gray.200" fontFamily="heading">
             Boas Vindas!
           </Heading>
-          <Text color="gray.400" textAlign="center">
+          <Text color="gray.400" textAlign="center" mb={5}>
             Crie sua conta e use o espaço para comprar itens variados e vender
             seus produtos
           </Text>
 
-          <Image source={Profile} alt="Logo" my={5} />
+          <TouchableOpacity onPress={handleUserPhotoSelect}>
+            {userImageSelected.selected ? (
+              <Image
+                w="20"
+                h="20"
+                borderRadius="full"
+                borderWidth="2"
+                borderColor="blue.light"
+                source={{
+                  uri: userImageSelected.uri,
+                }}
+                alt="User Image"
+              />
+            ) : (
+              <Image source={Profile} alt="User Image" />
+            )}
+          </TouchableOpacity>
 
           <Controller
             control={control}
             name="name"
             render={({ field: { onChange, value } }) => (
               <Input
+                my={5}
                 w="100%"
                 placeholder="Nome"
                 onChangeText={onChange}
@@ -141,7 +232,7 @@ export const SignUp = () => {
 
           <Controller
             control={control}
-            name="name"
+            name="phoneNumber"
             render={({ field: { onChange, value } }) => (
               <Input
                 w="100%"
@@ -157,7 +248,14 @@ export const SignUp = () => {
             control={control}
             name="password"
             render={({ field: { onChange, value } }) => (
-              <Input w="100%" secureTextEntry placeholder="Senha" />
+              <Input
+                w="100%"
+                secureTextEntry
+                placeholder="Senha"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.password?.message}
+              />
             )}
           />
 
