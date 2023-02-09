@@ -15,6 +15,11 @@ import {
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 
+import { Controller, useForm } from "react-hook-form";
+
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
@@ -29,6 +34,14 @@ import {
 } from "phosphor-react-native";
 import { AdCard } from "@components/AdCard";
 
+type FormDataProps = {
+  search: string;
+};
+
+const signInSchema = yup.object({
+  search: yup.string().required("Informe a pesquisa"),
+});
+
 export const Home = () => {
   const [showFiltersModal, setShowFiltersModal] = useState<boolean>(false);
   const [productCondition, setProductCondition] = useState<string>("new");
@@ -37,6 +50,17 @@ export const Home = () => {
 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    defaultValues: {
+      search: "",
+    },
+    resolver: yupResolver(signInSchema),
+  });
+
   const handleCreateAd = () => {
     navigation.navigate("createad");
   };
@@ -44,6 +68,8 @@ export const Home = () => {
   const handleSeeMyAds = () => {
     navigation.navigate("app", { screen: "myads" });
   };
+
+  const handleSearch = () => {};
 
   return (
     <ScrollView
@@ -130,26 +156,49 @@ export const Home = () => {
           bg="white"
           borderRadius={8}
           pr="1"
+          mb="5"
         >
-          <Input
-            placeholder="Buscar anúncio"
-            minH={14}
-            px={4}
-            borderWidth={0}
-            borderRadius={8}
-            fontSize="md"
-            color="gray.200"
-            fontFamily="body"
-            placeholderTextColor="gray.400"
-            bg="white"
-            width="50%"
-            flex={1}
-            _focus={{
-              bg: "white",
-            }}
+          <Controller
+            control={control}
+            name="search"
+            rules={{ required: "Informe o e-mail" }}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Input
+                  placeholder="Buscar anúncio"
+                  minH={14}
+                  px={4}
+                  borderWidth={0}
+                  borderRadius={8}
+                  fontSize="md"
+                  color="gray.200"
+                  fontFamily="body"
+                  placeholderTextColor="gray.400"
+                  bg="white"
+                  width="50%"
+                  onChangeText={onChange}
+                  value={value}
+                  flex={1}
+                  _focus={{
+                    bg: "white",
+                  }}
+                />
+                {errors.search?.message && (
+                  <Text
+                    position="absolute"
+                    top="-20"
+                    right="4"
+                    color="red.light"
+                  >
+                    {errors.search?.message}
+                  </Text>
+                )}
+              </>
+            )}
           />
 
           <NativeButton
+            onPress={handleSubmit(handleSearch)}
             bg="white"
             _pressed={{
               bg: "gray.500",
