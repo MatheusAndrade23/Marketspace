@@ -19,6 +19,7 @@ import { api } from "@services/api";
 export type AuthContextDataProps = {
   user: UserDTO;
   singIn: (email: string, password: string) => void;
+  token: string;
 };
 
 type AuthContextProviderProps = {
@@ -105,7 +106,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, singIn }}>
+    <AuthContext.Provider value={{ user, singIn, token }}>
       {children}
     </AuthContext.Provider>
   );

@@ -69,6 +69,7 @@ export const SignIn = () => {
       setIsLoading(true);
       await singIn(email, password);
     } catch (error) {
+      console.log(error);
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message

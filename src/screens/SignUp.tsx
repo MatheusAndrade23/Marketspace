@@ -59,8 +59,11 @@ export const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userImageSelected, setUserImageSelected] = useState({
     selected: false,
-    uri: "",
-    name: "",
+    photo: {
+      uri: "",
+      name: "",
+      binary: "",
+    },
   });
 
   const navigation = useNavigation();
@@ -85,6 +88,8 @@ export const SignUp = () => {
     resolver: yupResolver(signUpSchema),
   });
 
+  const userForm = new FormData();
+
   const handleUserPhotoSelect = async () => {
     try {
       const photoSelected = await ImagePicker.launchImageLibraryAsync({
@@ -92,7 +97,6 @@ export const SignUp = () => {
         quality: 1,
         aspect: [4, 4],
         allowsEditing: true,
-        base64: true,
       });
 
       if (photoSelected.canceled) {
@@ -122,12 +126,8 @@ export const SignUp = () => {
 
         setUserImageSelected({
           selected: true,
-          ...photoFile,
+          photo: { ...photoFile },
         });
-
-        // const userPhotoUploadForm = new FormData();
-
-        // userPhotoUploadForm.append("avatar", photoFile);
 
         toast.show({
           title: "Foto selecionada!",
@@ -165,27 +165,21 @@ export const SignUp = () => {
         });
       }
 
-      const userImage = {
-        ...userImageSelected,
-        name: `${name} + ${userImageSelected.name}`.toLowerCase(),
-      };
+      userForm.append("avatar", { ...userImageSelected.photo });
+      userForm.append("name", name.toLowerCase());
+      userForm.append("email", email.toLowerCase());
+      userForm.append("tel", phoneNumber);
+      userForm.append("password", password);
 
       setIsLoading(true);
 
-      await api.post(
-        "/users",
-        {
-          name,
-          email,
-          password,
-          tel: phoneNumber,
+      const Boundary = "Content-Disposition: form-data; name='form'";
+
+      await api.post("/users", userForm, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      });
 
       await singIn(email, password);
     } catch (error) {
@@ -231,7 +225,7 @@ export const SignUp = () => {
                 borderWidth="2"
                 borderColor="blue.light"
                 source={{
-                  uri: userImageSelected.uri,
+                  uri: userImageSelected.photo.uri,
                 }}
                 alt="User Image"
               />
@@ -245,7 +239,7 @@ export const SignUp = () => {
             name="name"
             render={({ field: { onChange, value } }) => (
               <Input
-                my={5}
+                mt={5}
                 w="100%"
                 placeholder="Nome"
                 onChangeText={onChange}
