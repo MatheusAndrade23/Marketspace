@@ -20,6 +20,7 @@ export type AuthContextDataProps = {
   user: UserDTO;
   singIn: (email: string, password: string) => void;
   token: string;
+  signOut: () => void;
 };
 
 type AuthContextProviderProps = {
@@ -106,7 +107,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, singIn, token }}>
+    <AuthContext.Provider value={{ user, singIn, token, signOut }}>
       {children}
     </AuthContext.Provider>
   );

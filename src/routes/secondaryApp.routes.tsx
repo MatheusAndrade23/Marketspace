@@ -12,6 +12,8 @@ import HomeSvg from "@assets/home.svg";
 import AdsSvg from "@assets/ads.svg";
 import GetOutSvg from "@assets/getout.svg";
 
+import { useAuth } from "@hooks/useAuth";
+
 type SecondaryAppRoutes = {
   home: undefined;
   myads: undefined;
@@ -69,7 +71,12 @@ export const SecondaryAppRoutes = () => {
       />
       <Screen
         name="getout"
-        component={Home}
+        component={() => {
+          const { signOut } = useAuth();
+
+          signOut();
+          return <></>;
+        }}
         options={{
           tabBarIcon: ({ color }) => (
             <GetOutSvg fill={color} width={iconSize} height={iconSize} />
