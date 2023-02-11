@@ -83,8 +83,6 @@ export const Home = () => {
     loadData();
   }, []);
 
-  console.log(user);
-
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -96,7 +94,7 @@ export const Home = () => {
             h="12"
             w="12"
             source={{
-              uri: `${api.defaults.baseURL}/avatar/${user.avatar}`,
+              uri: `${api.defaults.baseURL}/images/${user.avatar}`,
             }}
             alt="Foto de perfil"
             borderRadius="full"
