@@ -110,7 +110,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   return (
     <AuthContext.Provider value={{ user, singIn, token, signOut }}>
-      {isLoadingUserStorageData ? <Loading /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };
