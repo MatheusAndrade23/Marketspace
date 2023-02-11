@@ -16,6 +16,8 @@ import {
 
 import { api } from "@services/api";
 
+import { Loading } from "@components/Loading";
+
 export type AuthContextDataProps = {
   user: UserDTO;
   singIn: (email: string, password: string) => void;
@@ -108,7 +110,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   return (
     <AuthContext.Provider value={{ user, singIn, token, signOut }}>
-      {children}
+      {isLoadingUserStorageData ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };
