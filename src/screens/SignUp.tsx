@@ -165,15 +165,18 @@ export const SignUp = () => {
         });
       }
 
-      userForm.append("avatar", { ...userImageSelected.photo });
+      const { name } = getValues();
+
+      userForm.append("avatar", {
+        ...userImageSelected.photo,
+        name: `${name}.${userImageSelected.photo.name}`.toLowerCase(),
+      });
       userForm.append("name", name.toLowerCase());
       userForm.append("email", email.toLowerCase());
       userForm.append("tel", phoneNumber);
       userForm.append("password", password);
 
       setIsLoading(true);
-
-      const Boundary = "Content-Disposition: form-data; name='form'";
 
       await api.post("/users", userForm, {
         headers: {
