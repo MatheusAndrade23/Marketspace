@@ -13,6 +13,8 @@ import AdsSvg from "@assets/ads.svg";
 import GetOutSvg from "@assets/getout.svg";
 
 import { useAuth } from "@hooks/useAuth";
+import { Loading } from "@components/Loading";
+import { useEffect } from "react";
 
 type SecondaryAppRoutes = {
   home: undefined;
@@ -73,9 +75,15 @@ export const SecondaryAppRoutes = () => {
         name="getout"
         component={() => {
           const { signOut } = useAuth();
+          useEffect(() => {
+            const getOut = async () => {
+              await signOut();
+            };
 
-          signOut();
-          return <></>;
+            getOut();
+          }, []);
+
+          return <Loading />;
         }}
         options={{
           tabBarIcon: ({ color }) => (

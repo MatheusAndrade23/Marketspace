@@ -33,6 +33,15 @@ import { api } from "@services/api";
 
 import { useAuth } from "@hooks/useAuth";
 
+type userImageSelectedProps = {
+  selected: boolean;
+  photo: {
+    uri: string;
+    name: string;
+    type: string;
+  };
+};
+
 type FormDataProps = {
   name: string;
   email: string;
@@ -59,12 +68,7 @@ export const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userImageSelected, setUserImageSelected] = useState({
     selected: false,
-    photo: {
-      uri: "",
-      name: "",
-      binary: "",
-    },
-  });
+  } as userImageSelectedProps);
 
   const navigation = useNavigation();
 
@@ -167,10 +171,12 @@ export const SignUp = () => {
 
       const { name } = getValues();
 
-      userForm.append("avatar", {
+      const userImage = {
         ...userImageSelected.photo,
         name: `${name}.${userImageSelected.photo.name}`.toLowerCase(),
-      });
+      };
+
+      userForm.append("avatar", userImage);
       userForm.append("name", name.toLowerCase());
       userForm.append("email", email.toLowerCase());
       userForm.append("tel", phoneNumber);
