@@ -27,6 +27,7 @@ type AppRoutes = {
     images: any[];
     paymentMethods: string[];
     isNew: boolean;
+    acceptTrade: boolean;
   };
   app: {
     screen: "myads" | "home" | "getout";

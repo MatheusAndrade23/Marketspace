@@ -9,17 +9,39 @@ import {
 } from "native-base";
 import { StatusBar } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 import { Button } from "@components/Button";
 
-import { ArrowLeft, Barcode, QrCode, Bank } from "phosphor-react-native";
+import { ArrowLeft } from "phosphor-react-native";
+import { GeneratePaymentMethods } from "@utils/generatePaymentMethods";
+
+type RouteParams = {
+  title: string;
+  description: string;
+  price: string;
+  images: any[];
+  paymentMethods: string[];
+  isNew: boolean;
+  acceptTrade: boolean;
+};
 
 export const AdPreview = () => {
   const { colors } = useTheme();
 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  const route = useRoute();
+  const {
+    title,
+    description,
+    price,
+    images,
+    paymentMethods,
+    isNew,
+    acceptTrade,
+  } = route.params as RouteParams;
 
   const handleGoBack = () => {
     navigation.navigate("createad");
@@ -69,53 +91,34 @@ export const AdPreview = () => {
               fontSize={14}
               mt={4}
             >
-              Usado
+              {isNew ? "Novo" : "Usado"}
             </Heading>
             <HStack w="full" justifyContent="space-between" alignItems="center">
               <Heading color="gray.200" fontSize={22} fontFamily="heading">
-                Luminária pendente
+                {title}
               </Heading>
               <Text color="blue.light" fontFamily="heading">
                 R${" "}
                 <Heading color="blue.light" fontFamily="heading" fontSize={20}>
-                  45,00
+                  {price}
                 </Heading>
               </Text>
             </HStack>
 
             <Text mt={2} color="gray.300">
-              Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-              Vitae ante leo eget maecenas urna mattis cursus.{" "}
+              {description}
             </Text>
 
             <Heading color="gray.300" fontSize={14} my={5}>
-              Aceita troca? <Text fontWeight="normal">Não</Text>
+              Aceita troca?{" "}
+              <Text fontWeight="normal">{acceptTrade ? "Sim" : "Não"}</Text>
             </Heading>
 
             <Heading color="gray.300" fontSize={14} mb={2}>
               Meios de Pagamento:
             </Heading>
 
-            <HStack>
-              <Barcode size={20} color={colors.gray[300]} />
-              <Text ml={2} color="gray.300">
-                Boleto
-              </Text>
-            </HStack>
-
-            <HStack>
-              <QrCode size={20} color={colors.gray[300]} />
-              <Text ml={2} color="gray.300">
-                Pix
-              </Text>
-            </HStack>
-
-            <HStack alignItems="center">
-              <Bank size={20} color={colors.gray[300]} />
-              <Text ml={2} color="gray.300">
-                Depósito Bancário
-              </Text>
-            </HStack>
+            {GeneratePaymentMethods(paymentMethods)}
           </VStack>
         </VStack>
       </ScrollView>

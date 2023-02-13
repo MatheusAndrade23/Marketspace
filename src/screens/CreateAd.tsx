@@ -55,7 +55,7 @@ type FormDataProps = {
 export const CreateAd = () => {
   const [isNew, setIsNew] = useState<boolean>(true);
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
-  const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+  const [acceptTrade, setAcceptTrade] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<any[]>([]);
 
@@ -91,6 +91,14 @@ export const CreateAd = () => {
       });
     }
 
+    if (paymentMethods.length === 0) {
+      return toast.show({
+        title: "Selecione ao menos um meio de pagamento!",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
     navigation.navigate("adpreview", {
       title,
       description,
@@ -98,6 +106,7 @@ export const CreateAd = () => {
       images,
       paymentMethods,
       isNew,
+      acceptTrade,
     });
   };
 
@@ -301,8 +310,8 @@ export const CreateAd = () => {
           </Heading>
 
           <Switch
-            onToggle={(value) => setAcceptSwap(value)}
-            value={acceptSwap}
+            onToggle={(value) => setAcceptTrade(value)}
+            value={acceptTrade}
             size="lg"
             m={0}
           />
@@ -331,7 +340,7 @@ export const CreateAd = () => {
                 Dinheiro
               </Text>
             </Checkbox>
-            <Checkbox value="credit">
+            <Checkbox value="card">
               <Text color="gray.300" fontSize={16}>
                 Cartão de Crédito
               </Text>
@@ -367,6 +376,7 @@ export const CreateAd = () => {
           justifyContent="center"
           w="47%"
           h={12}
+          isLoading={isLoading}
           onPress={handleSubmit(handleGoPreview)}
         />
       </HStack>
