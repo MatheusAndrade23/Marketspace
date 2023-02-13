@@ -13,7 +13,11 @@ import {
   Radio,
   Checkbox,
   Switch,
+  useToast,
 } from "native-base";
+
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -28,6 +32,7 @@ import { Button } from "@components/Button";
 import { AdHeader } from "@components/AdHeader";
 
 import { Plus } from "phosphor-react-native";
+import { AppError } from "@utils/AppError";
 
 const createAdSchema = yup.object({
   title: yup
@@ -51,6 +56,8 @@ export const CreateAd = () => {
   const [productCondition, setProductCondition] = useState<string>("new");
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
   const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [images, setImages] = useState<any>([]);
 
   const {
     control,
@@ -67,14 +74,90 @@ export const CreateAd = () => {
 
   const { colors } = useTheme();
 
+  const toast = useToast();
+
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoBack = () => {
     navigation.navigate("app", { screen: "myads" });
   };
 
-  const handleGoPreview = () => {
+  const handleGoPreview = ({ title, description, price }: FormDataProps) => {
+    if (images.length === 0) {
+      return toast.show({
+        title: "Selecione ao menos uma imagem!",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
     navigation.navigate("adpreview");
+  };
+
+  const handleAdPhotoSelect = async () => {
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
+
+      if (photoSelected.canceled) {
+        return;
+      }
+
+      if (images.length > 2) {
+        throw new AppError("Só pode selecionar 3 fotos!");
+      }
+
+      if (photoSelected.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          photoSelected.assets[0].uri
+        );
+
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            title: "Essa imagem é muito grande. Escolha uma de até 5MB.",
+            placement: "top",
+            bgColor: "red.500",
+          });
+        }
+
+        const fileExtension = photoSelected.assets[0].uri.split(".").pop();
+
+        const photoFile = {
+          name: `${fileExtension}`.toLowerCase(),
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any;
+
+        setImages((images) => {
+          return [...images, photoFile];
+        });
+
+        toast.show({
+          title: "Foto selecionada!",
+          placement: "top",
+          bgColor: "green.500",
+        });
+      }
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível selecionar a imagem. Tente novamente!";
+
+      if (isAppError) {
+        toast.show({
+          title,
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -96,30 +179,38 @@ export const CreateAd = () => {
           </Text>
 
           <HStack my={5}>
-            <Image
-              w={88}
-              h={88}
-              source={{
-                uri: "https://img.ltwebstatic.com/gspCenter/goodsImage/2022/8/12/3845434535_1017760/6FD9BA9080E2D0D65BCF7BF88D0DCDA9_thumbnail_600x.jpg",
-              }}
-              alt="Imagem do novo anúncio"
-              resizeMode="cover"
-              borderRadius={8}
-            />
+            {images.length > 0 &&
+              images.map((imageData) => (
+                <Image
+                  w={88}
+                  h={88}
+                  mr={2}
+                  source={{
+                    uri: imageData.uri,
+                  }}
+                  alt="Imagem do novo anúncio"
+                  resizeMode="cover"
+                  borderRadius={8}
+                  key={imageData.uri}
+                />
+              ))}
 
-            <NativeButton
-              bg="gray.500"
-              w={88}
-              h={88}
-              ml={2}
-              _pressed={{
-                borderWidth: 1,
-                bg: "gray.500",
-                borderColor: "gray.400",
-              }}
-            >
-              <Plus color={colors.gray[400]} />
-            </NativeButton>
+            {images.length < 3 && (
+              <NativeButton
+                bg="gray.500"
+                w={88}
+                h={88}
+                ml={2}
+                _pressed={{
+                  borderWidth: 1,
+                  bg: "gray.500",
+                  borderColor: "gray.400",
+                }}
+                onPress={handleAdPhotoSelect}
+              >
+                <Plus color={colors.gray[400]} />
+              </NativeButton>
+            )}
           </HStack>
 
           <Heading color="gray.200" fontSize={18} my={2}>
@@ -228,17 +319,17 @@ export const CreateAd = () => {
                 Pix
               </Text>
             </Checkbox>
-            <Checkbox value="dinheiro">
+            <Checkbox value="cash">
               <Text color="gray.300" fontSize={16}>
                 Dinheiro
               </Text>
             </Checkbox>
-            <Checkbox value="credito">
+            <Checkbox value="credit">
               <Text color="gray.300" fontSize={16}>
                 Cartão de Crédito
               </Text>
             </Checkbox>
-            <Checkbox value="deposito">
+            <Checkbox value="deposit">
               <Text color="gray.300" fontSize={16}>
                 Depósito Bancário
               </Text>
