@@ -8,13 +8,7 @@ import {
   CreditCard,
 } from "phosphor-react-native";
 
-type GeneratePaymentMethodsProps = {
-  paymentMethods: string[];
-};
-
-export const GeneratePaymentMethods = ({
-  paymentMethods,
-}: GeneratePaymentMethodsProps) => {
+export const GeneratePaymentMethods = (paymentMethods: string[]) => {
   const { colors } = useTheme();
 
   return (
