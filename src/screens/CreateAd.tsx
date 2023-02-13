@@ -53,11 +53,11 @@ type FormDataProps = {
 };
 
 export const CreateAd = () => {
-  const [productCondition, setProductCondition] = useState<string>("new");
+  const [isNew, setIsNew] = useState<boolean>(true);
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
   const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [images, setImages] = useState<any>([]);
+  const [images, setImages] = useState<any[]>([]);
 
   const {
     control,
@@ -91,7 +91,14 @@ export const CreateAd = () => {
       });
     }
 
-    navigation.navigate("adpreview");
+    navigation.navigate("adpreview", {
+      title,
+      description,
+      price,
+      images,
+      paymentMethods,
+      isNew,
+    });
   };
 
   const handleAdPhotoSelect = async () => {
@@ -250,9 +257,9 @@ export const CreateAd = () => {
 
           <Radio.Group
             name="productCondition"
-            value={productCondition}
+            value={isNew ? "new" : "used"}
             onChange={(nextValue) => {
-              setProductCondition(nextValue);
+              setIsNew(nextValue === "new" ? true : false);
             }}
           >
             <HStack>

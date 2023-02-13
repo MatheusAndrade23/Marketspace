@@ -20,7 +20,14 @@ type AppRoutes = {
   myad: undefined;
   editad: undefined;
   createad: undefined;
-  adpreview: undefined;
+  adpreview: {
+    title: string;
+    description: string;
+    price: string;
+    images: any[];
+    paymentMethods: string[];
+    isNew: boolean;
+  };
   app: {
     screen: "myads" | "home" | "getout";
   };
