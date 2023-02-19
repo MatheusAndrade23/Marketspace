@@ -36,6 +36,7 @@ type RouteParams = {
 
 export const MyAd = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeletingLoading, setIsDeletingLoading] = useState(false);
   const [product, setProduct] = useState({} as ProductDTO);
 
   const width = Dimensions.get("window").width;
@@ -51,6 +52,28 @@ export const MyAd = () => {
 
   const handleGoBack = () => {
     navigation.navigate("app", { screen: "myads" });
+  };
+
+  const handleDeleteAd = async () => {
+    try {
+      setIsDeletingLoading(true);
+      await api.delete(`products/${id}`);
+
+      navigation.navigate("app", { screen: "myads" });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível deletar. Tente Novamente!";
+
+      if (isAppError) {
+        toast.show({
+          title,
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -186,6 +209,8 @@ export const MyAd = () => {
                 title="Excluir Anúncio"
                 variant="secondary"
                 icon={<Trash size={22} color="white" />}
+                onPress={handleDeleteAd}
+                isLoading={isDeletingLoading}
               />
             </VStack>
           </VStack>
