@@ -9,7 +9,6 @@ import {
   HStack,
   Image,
   Heading,
-  useTheme,
   useToast,
 } from "native-base";
 import { StatusBar, Dimensions } from "react-native";
