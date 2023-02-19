@@ -45,14 +45,6 @@ export const GeneratePaymentMethods = (paymentMethods: string[]) => {
           </Text>
         </HStack>
       )}
-      {paymentMethods.includes("cash") && (
-        <HStack alignItems="center">
-          <Money size={20} color={colors.gray[300]} />
-          <Text ml={2} color="gray.300">
-            Dinheiro
-          </Text>
-        </HStack>
-      )}
       {paymentMethods.includes("card") && (
         <HStack alignItems="center">
           <CreditCard size={20} color={colors.gray[300]} />

@@ -17,7 +17,9 @@ export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>;
 
 type AppRoutes = {
   ad: undefined;
-  myad: undefined;
+  myad: {
+    id: string;
+  };
   editad: undefined;
   createad: undefined;
   adpreview: {

@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import { useAuth } from "@hooks/useAuth";
+
 import {
   ScrollView,
   Text,
@@ -6,8 +10,9 @@ import {
   Image,
   Heading,
   useTheme,
+  useToast,
 } from "native-base";
-import { StatusBar, Dimensions, View } from "react-native";
+import { StatusBar, Dimensions } from "react-native";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
@@ -18,6 +23,8 @@ import { ArrowLeft } from "phosphor-react-native";
 import { GeneratePaymentMethods } from "@utils/generatePaymentMethods";
 
 import Carousel from "react-native-reanimated-carousel";
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
 
 type RouteParams = {
   title: string;
@@ -30,7 +37,14 @@ type RouteParams = {
 };
 
 export const AdPreview = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  const width = Dimensions.get("window").width;
+
+  const { user } = useAuth();
+
+  const toast = useToast();
 
   const route = useRoute();
   const {
@@ -47,7 +61,58 @@ export const AdPreview = () => {
     navigation.navigate("createad");
   };
 
-  const width = Dimensions.get("window").width;
+  const handlePublish = async () => {
+    setIsLoading(true);
+
+    try {
+      const product = await api.post("/products", {
+        name: title,
+        description,
+        price: parseInt(price.replace(/[^0-9]/g, "")),
+        payment_methods: paymentMethods,
+        is_new: isNew,
+        accept_trade: acceptTrade,
+      });
+
+      const imageData = new FormData();
+
+      images.forEach((item) => {
+        const imageFile = {
+          ...item,
+          name: user.name + "." + item.name,
+        } as any;
+
+        imageData.append("images", imageFile);
+      });
+
+      imageData.append("product_id", product.data.id);
+
+      const imagesData = await api.post("/products/images", imageData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      navigation.navigate("myad", {
+        id: product.data.id,
+      });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não publicar o anúncio. Tente novamente mais tarde!";
+
+      if (isAppError) {
+        toast.show({
+          title,
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -157,7 +222,9 @@ export const AdPreview = () => {
           alignItems="center"
           justifyContent="center"
           w="47%"
+          isLoading={isLoading}
           h={12}
+          onPress={handlePublish}
         />
       </HStack>
     </>
