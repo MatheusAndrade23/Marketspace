@@ -190,7 +190,7 @@ export const CreateAd = () => {
             Imagens
           </Heading>
           <Text color="gray.300" fontSize={14}>
-            Escolha até 3 imagens para mostrar o quando o seu produto é
+            Escolha até 3 imagens para mostrar o quanto o seu produto é
             incrível!
           </Text>
 
