@@ -7,7 +7,7 @@ import {
   Heading,
   useTheme,
 } from "native-base";
-import { StatusBar } from "react-native";
+import { StatusBar, Dimensions, View } from "react-native";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
@@ -16,6 +16,8 @@ import { Button } from "@components/Button";
 
 import { ArrowLeft } from "phosphor-react-native";
 import { GeneratePaymentMethods } from "@utils/generatePaymentMethods";
+
+import Carousel from "react-native-reanimated-carousel";
 
 type RouteParams = {
   title: string;
@@ -28,8 +30,6 @@ type RouteParams = {
 };
 
 export const AdPreview = () => {
-  const { colors } = useTheme();
-
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const route = useRoute();
@@ -46,6 +46,8 @@ export const AdPreview = () => {
   const handleGoBack = () => {
     navigation.navigate("createad");
   };
+
+  const width = Dimensions.get("window").width;
 
   return (
     <>
@@ -71,16 +73,26 @@ export const AdPreview = () => {
             </Text>
           </VStack>
 
-          <Image
-            w="full"
-            h={80}
-            source={{
-              uri: "https://img.ltwebstatic.com/gspCenter/goodsImage/2022/8/12/3845434535_1017760/6FD9BA9080E2D0D65BCF7BF88D0DCDA9_thumbnail_600x.jpg",
-            }}
-            alt="Ad Image"
-            resizeMode="cover"
-            borderColor="gray.400"
-            borderWidth={1}
+          <Carousel
+            loop
+            width={width}
+            height={320}
+            autoPlay={images.length > 1}
+            data={images}
+            scrollAnimationDuration={1000}
+            renderItem={({ item }) => (
+              <Image
+                w="full"
+                h={80}
+                source={{
+                  uri: item.uri,
+                }}
+                alt="Ad Image"
+                resizeMode="cover"
+                borderColor="gray.400"
+                borderWidth={1}
+              />
+            )}
           />
 
           <VStack px={5}>
