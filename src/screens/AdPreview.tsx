@@ -57,7 +57,7 @@ export const AdPreview = () => {
   } = route.params as RouteParams;
 
   const handleGoBack = () => {
-    navigation.navigate("createad");
+    navigation.goBack();
   };
 
   const handlePublish = async () => {
@@ -149,7 +149,9 @@ export const AdPreview = () => {
                 w="full"
                 h={80}
                 source={{
-                  uri: item.uri,
+                  uri: item.uri
+                    ? item.uri
+                    : `${api.defaults.baseURL}/images/${item.path}`,
                 }}
                 alt="Ad Image"
                 resizeMode="cover"

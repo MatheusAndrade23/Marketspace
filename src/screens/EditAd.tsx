@@ -87,8 +87,6 @@ export const EditAd = () => {
   const [images, setImages] = useState<any[]>(preImages);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(route.params);
-
   const {
     control,
     handleSubmit,
@@ -318,7 +316,21 @@ export const EditAd = () => {
             Venda
           </Heading>
 
-          <Input placeholder="0,00" h="14" mb={0} />
+          <Controller
+            control={control}
+            name="price"
+            rules={{ required: "Informe o preço!" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="0,00"
+                h="14"
+                mb={0}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.price?.message}
+              />
+            )}
+          />
 
           <Heading color="gray.200" fontSize={16} my={2}>
             Aceita troca?

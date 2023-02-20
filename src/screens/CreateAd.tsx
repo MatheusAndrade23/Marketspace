@@ -292,7 +292,7 @@ export const CreateAd = () => {
           <Controller
             control={control}
             name="price"
-            rules={{ required: "Informe o e-mail" }}
+            rules={{ required: "Informe o preço!" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="0,00"
