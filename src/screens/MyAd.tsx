@@ -11,6 +11,7 @@ import {
   Heading,
   useTheme,
   useToast,
+  Box,
 } from "native-base";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -155,27 +156,51 @@ export const MyAd = () => {
               </NativeButton>
             </HStack>
 
-            <Carousel
-              loop
-              width={width}
-              height={320}
-              autoPlay={product.product_images.length > 1}
-              data={product.product_images}
-              scrollAnimationDuration={1000}
-              renderItem={({ item }) => (
-                <Image
-                  w="full"
-                  h={80}
-                  source={{
-                    uri: `${api.defaults.baseURL}/images/${item.path}`,
-                  }}
-                  alt="Ad Image"
-                  resizeMode="cover"
-                  borderColor="gray.400"
-                  borderWidth={1}
-                />
+            <Box
+              position="relative"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {!product.is_active && (
+                <Heading
+                  flex={1}
+                  textTransform="uppercase"
+                  color="white"
+                  fontSize="lg"
+                  position="absolute"
+                  zIndex={100}
+                  bg="gray.300"
+                  p={1}
+                  w={240}
+                  textAlign="center"
+                  borderRadius={10}
+                >
+                  Anúncio Desativado
+                </Heading>
               )}
-            />
+              <Carousel
+                loop
+                width={width}
+                height={320}
+                autoPlay={product.product_images.length > 1}
+                data={product.product_images}
+                scrollAnimationDuration={1000}
+                renderItem={({ item }) => (
+                  <Image
+                    blurRadius={product.is_active ? 0 : 10}
+                    w="full"
+                    h={80}
+                    source={{
+                      uri: `${api.defaults.baseURL}/images/${item.path}`,
+                    }}
+                    alt="Ad Image"
+                    resizeMode="cover"
+                    borderColor="gray.300"
+                    borderWidth={1}
+                  />
+                )}
+              />
+            </Box>
 
             <VStack px={5}>
               <Heading

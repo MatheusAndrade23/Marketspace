@@ -61,7 +61,7 @@ export const AdCard = ({
               fontSize={10}
               position="absolute"
               zIndex={100}
-              bg="gray.200"
+              bg="gray.300"
               p={1}
               borderRadius={10}
             >
@@ -83,7 +83,7 @@ export const AdCard = ({
               left={1}
               top={1}
               borderWidth={1}
-              borderColor="gray.400"
+              borderColor="gray.300"
             />
           )}
           <Image
