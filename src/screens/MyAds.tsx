@@ -31,6 +31,7 @@ import { api } from "@services/api";
 export const MyAds = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<ProductDTO[]>([]);
+
   const [adType, setAdType] = useState("all");
 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
@@ -38,6 +39,16 @@ export const MyAds = () => {
   const toast = useToast();
 
   const { colors } = useTheme();
+
+  const filter = adType === "active" ? true : false;
+
+  const productsFiltered = products.filter((product) => {
+    if (adType === "all") {
+      return true;
+    }
+
+    return product.is_active === filter;
+  });
 
   const handleGoCreateAd = () => {
     navigation.navigate("createad");
@@ -137,7 +148,7 @@ export const MyAds = () => {
             px={5}
             columnWrapperStyle={{ justifyContent: "space-between" }}
             numColumns={2}
-            data={products}
+            data={productsFiltered}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <AdCard
@@ -152,10 +163,22 @@ export const MyAds = () => {
             )}
             ListEmptyComponent={() => (
               <Center flex={1}>
-                <Text color="gray.300" textAlign="center">
-                  Você ainda não criou nenhum anúncio. {"\n"}
-                  Clique em + para criar seu primeiro!
-                </Text>
+                {adType === "all" && (
+                  <Text color="gray.300" textAlign="center">
+                    Você ainda não criou nenhum anúncio. {"\n"}
+                    Clique em + para criar seu primeiro!
+                  </Text>
+                )}
+                {adType === "active" && (
+                  <Text color="gray.300" textAlign="center">
+                    Você não tem nenhum produto ativo!
+                  </Text>
+                )}
+                {adType === "inactive" && (
+                  <Text color="gray.300" textAlign="center">
+                    Você não tem nenhum produto inativo!
+                  </Text>
+                )}
               </Center>
             )}
           />
