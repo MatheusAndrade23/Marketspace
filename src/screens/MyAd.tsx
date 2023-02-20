@@ -57,6 +57,19 @@ export const MyAd = () => {
     navigation.navigate("app", { screen: "myads" });
   };
 
+  const handleGoEditAd = () => {
+    navigation.navigate("editad", {
+      title: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      images: product.product_images,
+      paymentMethods: product.payment_methods.map((item) => item.key),
+      isNew: product.is_new,
+      acceptTrade: product.accept_trade,
+      id: product.id,
+    });
+  };
+
   const handleChangeAdVisibility = async () => {
     try {
       setIsChangingVisibilityLoading(true);
@@ -151,7 +164,7 @@ export const MyAd = () => {
                 <ArrowLeft color={colors.gray[200]} />
               </NativeButton>
 
-              <NativeButton variant="secondary" px={5}>
+              <NativeButton variant="secondary" px={5} onPress={handleGoEditAd}>
                 <Pencil color={colors.gray[200]} />
               </NativeButton>
             </HStack>

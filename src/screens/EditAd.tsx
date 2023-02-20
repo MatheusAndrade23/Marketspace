@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogBox } from "react-native";
 
 import {
@@ -13,14 +13,18 @@ import {
   Radio,
   Checkbox,
   Switch,
+  useToast,
 } from "native-base";
 
 import { Controller, useForm } from "react-hook-form";
 
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 import { Input } from "@components/Input";
@@ -28,6 +32,10 @@ import { Button } from "@components/Button";
 import { AdHeader } from "@components/AdHeader";
 
 import { Plus } from "phosphor-react-native";
+
+import { AppError } from "@utils/AppError";
+
+import { api } from "@services/api";
 
 const editAdSchema = yup.object({
   title: yup
@@ -41,6 +49,17 @@ const editAdSchema = yup.object({
   price: yup.string().required("Informe um preço."),
 });
 
+type RouteParams = {
+  title: string;
+  description: string;
+  price: string;
+  images: any[];
+  paymentMethods: string[];
+  isNew: boolean;
+  acceptTrade: boolean;
+  id: string;
+};
+
 type FormDataProps = {
   title: string;
   description: string;
@@ -48,9 +67,27 @@ type FormDataProps = {
 };
 
 export const EditAd = () => {
-  const [productCondition, setProductCondition] = useState<string>("new");
-  const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
-  const [acceptSwap, setAcceptSwap] = useState<boolean>(false);
+  const route = useRoute();
+
+  const {
+    title,
+    description,
+    price,
+    images: preImages,
+    paymentMethods: prePaymentMethods,
+    isNew: preIsNew,
+    acceptTrade: preAcceptTrade,
+    id,
+  } = route.params as RouteParams;
+
+  const [isNew, setIsNew] = useState<boolean>(preIsNew);
+  const [paymentMethods, setPaymentMethods] =
+    useState<string[]>(prePaymentMethods);
+  const [acceptTrade, setAcceptTrade] = useState<boolean>(preAcceptTrade);
+  const [images, setImages] = useState<any[]>(preImages);
+  const [isLoading, setIsLoading] = useState(false);
+
+  console.log(route.params);
 
   const {
     control,
@@ -58,23 +95,115 @@ export const EditAd = () => {
     formState: { errors },
   } = useForm<FormDataProps>({
     defaultValues: {
-      title: "",
-      description: "",
-      price: "",
+      title,
+      description,
+      price,
     },
     resolver: yupResolver(editAdSchema),
   });
 
   const { colors } = useTheme();
 
+  const toast = useToast();
+
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoBack = () => {
-    navigation.navigate("myad");
+    navigation.navigate("myad", { id });
   };
 
-  const handleGoPreview = () => {
-    navigation.navigate("adpreview");
+  const handleGoPreview = ({ title, description, price }: FormDataProps) => {
+    if (images.length === 0) {
+      return toast.show({
+        title: "Selecione ao menos uma imagem!",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
+    if (paymentMethods.length === 0) {
+      return toast.show({
+        title: "Selecione ao menos um meio de pagamento!",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
+    navigation.navigate("adpreview", {
+      title,
+      description,
+      price,
+      images,
+      paymentMethods,
+      isNew,
+      acceptTrade,
+    });
+  };
+
+  const handleAdPhotoSelect = async () => {
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
+
+      if (photoSelected.canceled) {
+        return;
+      }
+
+      if (images.length > 2) {
+        throw new AppError("Só pode selecionar 3 fotos!");
+      }
+
+      if (photoSelected.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          photoSelected.assets[0].uri
+        );
+
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            title: "Essa imagem é muito grande. Escolha uma de até 5MB.",
+            placement: "top",
+            bgColor: "red.500",
+          });
+        }
+
+        const fileExtension = photoSelected.assets[0].uri.split(".").pop();
+
+        const photoFile = {
+          name: `${fileExtension}`.toLowerCase(),
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any;
+
+        setImages((images) => {
+          return [...images, photoFile];
+        });
+
+        toast.show({
+          title: "Foto selecionada!",
+          placement: "top",
+          bgColor: "green.500",
+        });
+      }
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível selecionar a imagem. Tente novamente!";
+
+      if (isAppError) {
+        toast.show({
+          title,
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -95,30 +224,38 @@ export const EditAd = () => {
           </Text>
 
           <HStack my={5}>
-            <Image
-              w={88}
-              h={88}
-              source={{
-                uri: "https://img.ltwebstatic.com/gspCenter/goodsImage/2022/8/12/3845434535_1017760/6FD9BA9080E2D0D65BCF7BF88D0DCDA9_thumbnail_600x.jpg",
-              }}
-              alt="Imagem do novo anúncio"
-              resizeMode="cover"
-              borderRadius={8}
-            />
+            {images.length > 0 &&
+              images.map((imageData) => (
+                <Image
+                  w={88}
+                  h={88}
+                  mr={2}
+                  source={{
+                    uri: `${api.defaults.baseURL}/images/${imageData.path}`,
+                  }}
+                  alt="Imagem do novo anúncio"
+                  resizeMode="cover"
+                  borderRadius={8}
+                  key={imageData.path}
+                />
+              ))}
 
-            <NativeButton
-              bg="gray.500"
-              w={88}
-              h={88}
-              ml={2}
-              _pressed={{
-                borderWidth: 1,
-                bg: "gray.500",
-                borderColor: "gray.400",
-              }}
-            >
-              <Plus color={colors.gray[400]} />
-            </NativeButton>
+            {images.length < 3 && (
+              <NativeButton
+                bg="gray.500"
+                w={88}
+                h={88}
+                ml={2}
+                _pressed={{
+                  borderWidth: 1,
+                  bg: "gray.500",
+                  borderColor: "gray.400",
+                }}
+                onPress={handleAdPhotoSelect}
+              >
+                <Plus color={colors.gray[400]} />
+              </NativeButton>
+            )}
           </HStack>
 
           <Heading color="gray.200" fontSize={18} my={2}>
@@ -158,9 +295,9 @@ export const EditAd = () => {
 
           <Radio.Group
             name="productCondition"
-            value={productCondition}
+            value={isNew ? "new" : "used"}
             onChange={(nextValue) => {
-              setProductCondition(nextValue);
+              setIsNew(nextValue === "new" ? true : false);
             }}
           >
             <HStack>
@@ -188,8 +325,8 @@ export const EditAd = () => {
           </Heading>
 
           <Switch
-            onToggle={(value) => setAcceptSwap(value)}
-            value={acceptSwap}
+            onToggle={(value) => setAcceptTrade(value)}
+            value={acceptTrade}
             size="lg"
             m={0}
           />
@@ -209,17 +346,17 @@ export const EditAd = () => {
                 Pix
               </Text>
             </Checkbox>
-            <Checkbox value="dinheiro">
+            <Checkbox value="cash">
               <Text color="gray.300" fontSize={16}>
                 Dinheiro
               </Text>
             </Checkbox>
-            <Checkbox value="credito">
+            <Checkbox value="card">
               <Text color="gray.300" fontSize={16}>
                 Cartão de Crédito
               </Text>
             </Checkbox>
-            <Checkbox value="deposito">
+            <Checkbox value="deposit">
               <Text color="gray.300" fontSize={16}>
                 Depósito Bancário
               </Text>

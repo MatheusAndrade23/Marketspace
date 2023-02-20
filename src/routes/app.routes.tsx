@@ -20,7 +20,16 @@ type AppRoutes = {
   myad: {
     id: string;
   };
-  editad: undefined;
+  editad: {
+    title: string;
+    description: string;
+    price: string;
+    images: any[];
+    paymentMethods: string[];
+    isNew: boolean;
+    acceptTrade: boolean;
+    id: string;
+  };
   createad: undefined;
   adpreview: {
     title: string;
