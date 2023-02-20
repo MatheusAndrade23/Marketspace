@@ -37,6 +37,8 @@ type RouteParams = {
 export const MyAd = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeletingLoading, setIsDeletingLoading] = useState(false);
+  const [isChangingVisibilityLoading, setIsChangingVisibilityLoading] =
+    useState(false);
   const [product, setProduct] = useState({} as ProductDTO);
 
   const width = Dimensions.get("window").width;
@@ -52,6 +54,37 @@ export const MyAd = () => {
 
   const handleGoBack = () => {
     navigation.navigate("app", { screen: "myads" });
+  };
+
+  const handleChangeAdVisibility = async () => {
+    try {
+      setIsChangingVisibilityLoading(true);
+      const data = await api.patch(`products/${id}`, {
+        is_active: !product.is_active,
+      });
+
+      setProduct((state) => {
+        return {
+          ...state,
+          is_active: !state.is_active,
+        };
+      });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível deletar. Tente Novamente!";
+
+      if (isAppError) {
+        toast.show({
+          title,
+          placement: "top",
+          bgColor: "red.500",
+        });
+      }
+    } finally {
+      setIsChangingVisibilityLoading(false);
+    }
   };
 
   const handleDeleteAd = async () => {
@@ -80,9 +113,6 @@ export const MyAd = () => {
     const loadData = async () => {
       try {
         const productData = await api.get(`products/${id}`);
-
-        console.log(productData.data);
-
         setProduct(productData.data);
         setIsLoading(false);
       } catch (error) {
@@ -201,9 +231,13 @@ export const MyAd = () => {
 
             <VStack px={5} my={5}>
               <Button
-                title="Desativar Anúncio"
+                title={
+                  product.is_active ? "Desativar Anúncio" : "Ativar Anúncio"
+                }
+                onPress={handleChangeAdVisibility}
                 icon={<Power size={22} color="white" />}
                 mb={2}
+                isLoading={isChangingVisibilityLoading}
               />
               <Button
                 title="Excluir Anúncio"
