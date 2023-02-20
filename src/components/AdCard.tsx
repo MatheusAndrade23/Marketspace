@@ -10,6 +10,7 @@ type Props = IStackProps & {
   used: boolean;
   active: boolean;
   image: string;
+  id: string;
   showProfile?: boolean;
   profileImage?: string;
 };
@@ -22,17 +23,18 @@ export const AdCard = ({
   image,
   profileImage,
   showProfile = false,
+  id,
   ...rest
 }: Props) => {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoMyAd = () => {
-    navigation.navigate("myad");
+    navigation.navigate("myad", { id });
   };
 
   return (
     <TouchableOpacity onPress={handleGoMyAd}>
-      <VStack position="relative" {...rest} w="45%">
+      <VStack position="relative" {...rest}>
         {active && (
           <Heading
             textTransform="uppercase"
@@ -85,8 +87,8 @@ export const AdCard = ({
             />
           )}
           <Image
-            h={20}
-            w={40}
+            h="24"
+            w="lg"
             source={{
               uri: image,
             }}
