@@ -16,7 +16,9 @@ const { Navigator, Screen } = createNativeStackNavigator<AppRoutes>();
 export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>;
 
 type AppRoutes = {
-  ad: undefined;
+  ad: {
+    id: string;
+  };
   myad: {
     id: string;
   };
