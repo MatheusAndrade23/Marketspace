@@ -11,4 +11,7 @@ export type ProductDTO = {
   product_images: ImageDTO[];
   is_active: boolean;
   payment_methods: PaymentMethodDTO[];
+  user?: {
+    avatar: string;
+  };
 };

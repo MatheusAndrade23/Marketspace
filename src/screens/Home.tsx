@@ -318,7 +318,6 @@ export const Home = () => {
           ) : (
             <FlatList
               flex={1}
-              px={5}
               columnWrapperStyle={{ justifyContent: "space-between" }}
               numColumns={2}
               data={products}
@@ -333,6 +332,7 @@ export const Home = () => {
                   price={item.price.toString()}
                   id={item.id}
                   showProfile
+                  profileImage={`${api.defaults.baseURL}/images/${item.user?.avatar}`}
                 />
               )}
               ListEmptyComponent={() => (
