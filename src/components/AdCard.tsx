@@ -19,7 +19,7 @@ export const AdCard = ({
   title,
   price,
   used,
-  active,
+  active = true,
   image,
   profileImage,
   showProfile = false,
@@ -29,7 +29,11 @@ export const AdCard = ({
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoMyAd = () => {
-    navigation.navigate("myad", { id });
+    if (showProfile) {
+      navigation.navigate("ad", { id });
+    } else {
+      navigation.navigate("myad", { id });
+    }
   };
 
   return (
