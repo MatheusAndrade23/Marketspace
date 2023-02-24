@@ -79,7 +79,7 @@ export const CreateAd = () => {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleGoBack = () => {
-    navigation.navigate("app", { screen: "myads" });
+    navigation.goBack();
   };
 
   const handleGoPreview = ({ title, description, price }: FormDataProps) => {
