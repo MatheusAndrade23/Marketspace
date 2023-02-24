@@ -8,14 +8,15 @@ import {
   CreditCard,
 } from "phosphor-react-native";
 
-export const GeneratePaymentMethods = (paymentMethods: string[]) => {
-  const { colors } = useTheme();
-
+export const GeneratePaymentMethods = (
+  paymentMethods: string[],
+  color: string
+) => {
   return (
     <>
       {paymentMethods.includes("boleto") && (
         <HStack alignItems="center">
-          <Barcode size={20} color={colors.gray[300]} />
+          <Barcode size={20} color={color} />
           <Text ml={2} color="gray.300">
             Boleto
           </Text>
@@ -23,7 +24,7 @@ export const GeneratePaymentMethods = (paymentMethods: string[]) => {
       )}
       {paymentMethods.includes("pix") && (
         <HStack alignItems="center">
-          <QrCode size={20} color={colors.gray[300]} />
+          <QrCode size={20} color={color} />
           <Text ml={2} color="gray.300">
             Pix
           </Text>
@@ -31,7 +32,7 @@ export const GeneratePaymentMethods = (paymentMethods: string[]) => {
       )}
       {paymentMethods.includes("deposit") && (
         <HStack alignItems="center">
-          <Bank size={20} color={colors.gray[300]} />
+          <Bank size={20} color={color} />
           <Text ml={2} color="gray.300">
             Depósito Bancário
           </Text>
@@ -39,7 +40,7 @@ export const GeneratePaymentMethods = (paymentMethods: string[]) => {
       )}
       {paymentMethods.includes("cash") && (
         <HStack alignItems="center">
-          <Money size={20} color={colors.gray[300]} />
+          <Money size={20} color={color} />
           <Text ml={2} color="gray.300">
             Dinheiro
           </Text>
@@ -47,7 +48,7 @@ export const GeneratePaymentMethods = (paymentMethods: string[]) => {
       )}
       {paymentMethods.includes("card") && (
         <HStack alignItems="center">
-          <CreditCard size={20} color={colors.gray[300]} />
+          <CreditCard size={20} color={color} />
           <Text ml={2} color="gray.300">
             Cartão de Crédito
           </Text>

@@ -263,7 +263,8 @@ export const MyAd = () => {
               {GeneratePaymentMethods(
                 product.payment_methods.map(
                   (payment_method) => payment_method.key
-                )
+                ),
+                colors.gray[300]
               )}
             </VStack>
 
