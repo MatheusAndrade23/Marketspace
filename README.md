@@ -12,9 +12,15 @@
 
 _<h3>Logando e Fazendo um Tour 📱</h3>_
 
+![tour_marketspace](https://user-images.githubusercontent.com/84635540/221325079-7490ae8a-1912-459c-a6c9-b232bb70f2db.gif)
+
 _<h3>Criando um Anúncio e Manipulando 🛒</h3>_
 
+![create_marketspace](https://user-images.githubusercontent.com/84635540/221325090-80a857c2-1be3-41d7-9cfa-ed97186e6e46.gif)
+
 _<h3>Pesquisando e Filtrando Anúncios 🎁</h3>_
+
+![filtrando_marketspace](https://user-images.githubusercontent.com/84635540/221325104-5998ff73-d87e-471e-b110-3e12ef133d5d.gif)
 
 <br>
 
